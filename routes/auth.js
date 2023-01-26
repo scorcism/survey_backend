@@ -13,13 +13,14 @@ const jwt = require('jsonwebtoken');
 router.post('/createuser', [
     body('name', 'Enter a valid Name').isLength({ min: 2 }),
     body('surname', "Enter Your surname").isLength({ min: 1 }),
+    body('username', 'username length should >= 2').isLength({ min: 2 }),
     body('email', 'Enter a valid Email').isEmail(),
     body('password', 'Password Length should >= 5').isLength({ min: 5 }),
 ], async (req, res) => {
 
     const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({errors:errors.array()})
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
     }
 
     try {
@@ -29,7 +30,7 @@ router.post('/createuser', [
         }
 
         let salt = await bcrypt.genSalt(10);
-        const securePassword = await bcrypt.hash(req.body.password,salt);
+        const securePassword = await bcrypt.hash(req.body.password, salt);
 
         user = await User.create({
             name: req.body.name,
@@ -39,23 +40,74 @@ router.post('/createuser', [
             password: securePassword,
         })
 
-        let data  = {
-            user:{
-                username:user.username
+        let data = {
+            user: {
+                username: user.username
             }
         }
         var authtoken = jwt.sign(data, process.env.JWT_SECRET);
 
-        return res.send({authtoken})
+        res.json({ authtoken })
     } catch (error) {
-        return res.send(error)
+        // return res.send(error)
+        res.status(500).json({ error: "Internal server error occured" })
     }
 })
 
-// login user
+// Route 2: create user: No Login Required: POST /api/auth/login
+/*
+*/
+router.post("/login", [
+    body('email', 'Enter a valid Email').isEmail(),
+    body('password', 'Password cannot be blank').exists,
+    body('password', 'Password Length should >= 5').isLength({ min: 5 }),
+], async (req, res) => {
+    // console.log("In login")
+    const errors = validationResult();
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ error: errros.array() })
+    }
 
+    try {
+        // console.log("In try")
+        const { email, password } = req.body;
 
-// get usr info
+        let user = await User.findOne({ email })
 
+        if (!user) {
+            return res.status(400).json({ error: "Enter a valid credentials" })
+        }
+
+        const passwordCompare = await bcrypt.compare(password, user.password);
+
+        if (!passwordCompare) {
+            return res.status(400).json({ error: "Enter a valid credentials" })
+        }
+
+        let data = {
+            user: {
+                username: user.username
+            }
+        }
+        var authtoken = jwt.sign(data, process.env.JWT_SECRET);
+
+        res.json({ authtoken })
+    } catch (error) {
+        // console.log("In catch")
+        res.send(500).json({ error: "Internal server error occured" })
+    }
+})
+
+// Route 3: Get logged in user details : POST: /api/auth/getuser - Logged in required
+router.post('/getuser', async (req, res) => {
+    try {
+
+        const username = req.user.username;
+        const user = await User.find({ username }).select("-password");
+        res.send(user);
+    } catch (error) {
+        res.status(500).json({ error: "Internal server error ocured" })
+    }
+})
 
 module.exports = router
