@@ -1,0 +1,11 @@
+URLs_ref:{
+    "express_validator":"https://express-validator.github.io/docs/",
+    "bcryptjs":"https://www.npmjs.com/package/bcryptjs",
+    "jwt token":"https://www.npmjs.com/package/jsonwebtoken",
+    "dotenv":"https://www.npmjs.com/package/dotenv"
+
+}
+
+
+
+
