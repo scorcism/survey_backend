@@ -4,6 +4,7 @@ const User = require('../models/User');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fetchuser = require('../middleware/fetchUser');
 
 
 
@@ -49,8 +50,8 @@ router.post('/createuser', [
 
         res.json({ authtoken })
     } catch (error) {
-        // return res.send(error)
-        res.status(500).json({ error: "Internal server error occured" })
+        return res.send(error)
+        // res.status(500).json({ error: "Internal server error occured" })
     }
 })
 
@@ -58,21 +59,22 @@ router.post('/createuser', [
 /*
 */
 router.post("/login", [
-    body('email', 'Enter a valid Email').isEmail(),
-    body('password', 'Password cannot be blank').exists,
+    body('username', 'username length should >= 2').isLength({ min: 2 }),
     body('password', 'Password Length should >= 5').isLength({ min: 5 }),
 ], async (req, res) => {
-    // console.log("In login")
-    const errors = validationResult();
+    console.log("In login")
+
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
-        return res.status(400).json({ error: errros.array() })
+        return res.status(400).json({ errors: errors.array() })
     }
 
-    try {
-        // console.log("In try")
-        const { email, password } = req.body;
+    const { username, password } = req.body;
 
-        let user = await User.findOne({ email })
+    try {
+        console.log("In try")
+
+        let user = await User.findOne({ username })
 
         if (!user) {
             return res.status(400).json({ error: "Enter a valid credentials" })
@@ -89,23 +91,26 @@ router.post("/login", [
                 username: user.username
             }
         }
-        var authtoken = jwt.sign(data, process.env.JWT_SECRET);
+        let authtoken = jwt.sign(data, process.env.JWT_SECRET);
 
         res.json({ authtoken })
     } catch (error) {
-        // console.log("In catch")
+        console.log("In catch")
         res.send(500).json({ error: "Internal server error occured" })
     }
 })
 
 // Route 3: Get logged in user details : POST: /api/auth/getuser - Logged in required
-router.post('/getuser', async (req, res) => {
+router.post('/getuser', fetchuser, async (req, res) => {
+    // res.send(req.user)
     try {
 
-        const username = req.user.username;
-        const user = await User.find({ username }).select("-password");
+        let username = req.user;
+        const user = await User.find( username ).select("-password");
+        // console.log(user)
         res.send(user);
     } catch (error) {
+        console.log(error)
         res.status(500).json({ error: "Internal server error ocured" })
     }
 })
