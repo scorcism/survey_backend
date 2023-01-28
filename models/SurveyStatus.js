@@ -3,7 +3,9 @@ const {Schema} = mongoose;
 
 const SurveyStatusSchema = Schema({
     SurveyStatus: {
-        type:String
+        type:String,
+        default: "open"
+        // open or close
     },
 }, { timestamps: true });
 

@@ -9,9 +9,9 @@ const AnswerSchema = Schema({
     Answer: {
         type:String,
     },
-    ResponseID: {
+    RespondantID:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'Response'
+        ref:'Respondant'
     }
 }, { timestamps: true });
 

@@ -6,14 +6,6 @@ const QuestionSchema = Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref : 'Survey',
     },
-    "QuestionTypeID": {
-        type: mongoose.Schema.Types.ObjectId,
-        ref : 'QuestionType',
-    },
-    "Order": {
-       type: Number,
-       default: 1
-    },
     "isMandatory": {
         type: Boolean
     },

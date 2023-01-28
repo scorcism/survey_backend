@@ -1,0 +1,27 @@
+Respondant creates an accout
+click on the create survey button
+Gives the details -> name, desc, start date, end date , maxResponse
+select the dropdown for survey status -> open / closed
+asks a question -> quesrion text, is Mandatory mark
+Response notes the start time of the survey and the end time of the survey with respect to the surveyID and  RespondantID
+Answer will store all the answer of a particluar question -> QuestionID, Answer text, RespondantID
+
+At start we are only considering one question in one survey
+Respondant here is user and creator also
+
+After login home page will be change to all the question
+All the questions will be present in the home page
+user will click on the particular survey.question and submits the answer
+
+the answer payload will containe {
+    Question id,
+    answer,
+    respondanr id (fetched from the auth toekn)
+}
+
+to show all the qestions -> find all to the survey.question db
+
+eyery question will have id associated with it, 
+
+user can see his/her questions and answer by fetching surveys based on the survey id associated with the user
+

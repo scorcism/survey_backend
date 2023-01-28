@@ -5,15 +5,16 @@ const SurveySchema = Schema({
     "name": {
         type: String
     },
+    "description": {
+        Type: String
+    },
     "startDate": {
         type: Date
-    },
-    "minResponses": {
-        type: Number
     },
     "SurveyStatusID": {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'SurveyStatus',
+        // open or close
     },
     "endDate": {
         type: Date
@@ -21,8 +22,9 @@ const SurveySchema = Schema({
     "maxResponses": {
         type: Number
     },
-    "description": {
-        Type: String
+    "RespondantID":{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Respondant',
     }
 }, { timestamps: true });
 
