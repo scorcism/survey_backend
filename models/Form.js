@@ -3,7 +3,7 @@ const { Schema } = mongoose
 
 const FormSchema = Schema({
     username: {
-        type: mongoose.Schema.Types.username,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
     },
     title: {
@@ -24,6 +24,5 @@ const FormSchema = Schema({
     },
 }, { timestamps: true });
 
-
-const Form = mongoose.model('form', FormSchema);
+const Form = mongoose.model('Form', FormSchema);
 module.exports = Form;

@@ -1,0 +1,64 @@
+db.Respondant.insert({
+    "RespondentID": ObjectId("2c0f2b952de49e3a1159e37e"),
+    "Email": "Lorem",
+    "Name": "Lorem",
+    "usrnm": "Lorem"
+});
+
+db.Response.insert({
+    "ResponseID": ObjectId("9efeadefbdfd3edad94dbbca"),
+    "RespondantID": "Lorem",
+    "BeginDate": ISODate("2016-04-08T15:06:21.595Z"),
+    "EndDate": ISODate("2016-04-08T15:06:21.595Z"),
+    "SurveyId": "Lorem"
+});
+
+db.Answers.insert({
+    "AnswerID": ObjectId("5afae81fedba39adb2b3e3e2"),
+    "QuestionID": "Lorem",
+    "Answer": "Lorem",
+    "ResponseID": "Lorem"
+});
+
+db.AnswerOptions.insert({
+    "AnswerOptionID": ObjectId("01e3e621b92b87f2c35271ed"),
+    "QuestionOptionID": "Lorem",
+    "AnswerID": "Lorem"
+});
+
+db.SurveyStatus.insert({
+    "SurveyStatus": "Lorem",
+    "SurveyStatusID": ObjectId("61995a5ccec8d477e7ef02d2")
+});
+
+db.Survey.insert({
+    "Name": "Lorem",
+    "SurveyID": ObjectId("a5be2d9aec369ebbb7c9ff23"),
+    "StartDate": ISODate("2016-04-08T15:06:21.595Z"),
+    "NibResponses": 49,
+    "SurveyStatusID": "Lorem",
+    "EndDate": ISODate("2016-04-08T15:06:21.595Z"),
+    "MaxResponses": -68,
+    "Description": "Lorem"
+});
+
+db.QuestionType.insert({
+    "QuestionType": "Lorem",
+    "QuestionTypeID": ObjectId("fc7a5e439b8fca84d30dfc39")
+});
+
+db.Question.insert({
+    "QuestionID": ObjectId("e5211e3dd6cf7dcd2c376dbd"),
+    "SurveyID": "Lorem",
+    "QuestionTypeID": "Lorem",
+    "Order": -3,
+    "isMandatory": true,
+    "QuestionText": "Lorem"
+});
+
+db.QuestionOptions.insert({
+    "QuestionOptionID": ObjectId("b0f3b0eaaacf726afbcc5aeb"),
+    "QuestionID": "Lorem",
+    "Value": "Lorem",
+    "order": -69
+});

@@ -1,0 +1,300 @@
+db.createCollection("Respondant", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "Respondant",
+            "properties": {
+                "_id": {
+                    "bsonType": "objectId"
+                },
+                "RespondentID": {
+                    "bsonType": "objectId"
+                },
+                "Email": {
+                    "bsonType": "string"
+                },
+                "Name": {
+                    "bsonType": "string"
+                },
+                "usrnm": {
+                    "bsonType": "string",
+                    "title": "username"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "validationLevel": "off",
+    "validationAction": "warn"
+});
+
+
+
+
+db.createCollection("Response", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "Response",
+            "properties": {
+                "_id": {
+                    "bsonType": "objectId"
+                },
+                "ResponseID": {
+                    "bsonType": "objectId"
+                },
+                "RespondantID": {
+                    "bsonType": "string"
+                },
+                "BeginDate": {
+                    "bsonType": "date"
+                },
+                "EndDate": {
+                    "bsonType": "date"
+                },
+                "SurveyId": {
+                    "bsonType": "string"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "validationLevel": "off",
+    "validationAction": "warn"
+});
+
+
+
+
+db.createCollection("Answers", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "Answers",
+            "properties": {
+                "_id": {
+                    "bsonType": "objectId"
+                },
+                "AnswerID": {
+                    "bsonType": "objectId"
+                },
+                "QuestionID": {
+                    "bsonType": "string"
+                },
+                "Answer": {
+                    "bsonType": "string"
+                },
+                "ResponseID": {
+                    "bsonType": "string"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "validationLevel": "off",
+    "validationAction": "warn"
+});
+
+
+
+
+db.createCollection("AnswerOptions", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "AnswerOptions",
+            "properties": {
+                "_id": {
+                    "bsonType": "objectId"
+                },
+                "AnswerOptionID": {
+                    "bsonType": "objectId"
+                },
+                "QuestionOptionID": {
+                    "bsonType": "string"
+                },
+                "AnswerID": {
+                    "bsonType": "string"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "validationLevel": "off",
+    "validationAction": "warn"
+});
+
+
+
+
+db.createCollection("SurveyStatus", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "SurveyStatus",
+            "properties": {
+                "_id": {
+                    "bsonType": "objectId"
+                },
+                "SurveyStatus": {
+                    "bsonType": "string"
+                },
+                "SurveyStatusID": {
+                    "bsonType": "objectId"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "validationLevel": "off",
+    "validationAction": "warn"
+});
+
+
+
+
+db.createCollection("Survey", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "Survey",
+            "properties": {
+                "_id": {
+                    "bsonType": "objectId"
+                },
+                "Name": {
+                    "bsonType": "string"
+                },
+                "SurveyID": {
+                    "bsonType": "objectId"
+                },
+                "StartDate": {
+                    "bsonType": "date"
+                },
+                "NibResponses": {
+                    "bsonType": "number"
+                },
+                "SurveyStatusID": {
+                    "bsonType": "string"
+                },
+                "EndDate": {
+                    "bsonType": "date"
+                },
+                "MaxResponses": {
+                    "bsonType": "number"
+                },
+                "Description": {
+                    "bsonType": "string"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "validationLevel": "off",
+    "validationAction": "warn"
+});
+
+
+
+
+db.createCollection("QuestionType", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "QuestionType",
+            "properties": {
+                "_id": {
+                    "bsonType": "objectId"
+                },
+                "QuestionType": {
+                    "bsonType": "string"
+                },
+                "QuestionTypeID": {
+                    "bsonType": "objectId"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "validationLevel": "off",
+    "validationAction": "warn"
+});
+
+
+
+
+db.createCollection("Question", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "Question",
+            "properties": {
+                "_id": {
+                    "bsonType": "objectId"
+                },
+                "QuestionID": {
+                    "bsonType": "objectId"
+                },
+                "SurveyID": {
+                    "bsonType": "string"
+                },
+                "QuestionTypeID": {
+                    "bsonType": "string"
+                },
+                "Order": {
+                    "bsonType": "number"
+                },
+                "isMandatory": {
+                    "bsonType": "bool"
+                },
+                "QuestionText": {
+                    "bsonType": "string"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "validationLevel": "off",
+    "validationAction": "warn"
+});
+
+
+
+
+db.createCollection("QuestionOptions", {
+    "capped": false,
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "title": "QuestionOptions",
+            "properties": {
+                "_id": {
+                    "bsonType": "objectId"
+                },
+                "QuestionOptionID": {
+                    "bsonType": "objectId"
+                },
+                "QuestionID": {
+                    "bsonType": "string"
+                },
+                "Value": {
+                    "bsonType": "string"
+                },
+                "order": {
+                    "bsonType": "number"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "validationLevel": "off",
+    "validationAction": "warn"
+});
