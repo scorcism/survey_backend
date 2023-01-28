@@ -2,15 +2,20 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 const QuestionSchema = Schema({
-    "SurveyID": {
+    "surveyID": {
         type: mongoose.Schema.Types.ObjectId,
         ref : 'Survey',
     },
-    "isMandatory": {
-        type: Boolean
+    "respondantID":{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Respondant'
     },
-    "QuestionText": {
+    "questionText": {
         type: String
+    },
+    "createOn":{
+        type:Date,
+        default: Date.now
     }
 }, { timestamps: true });
 

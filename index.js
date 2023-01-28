@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 })
 
 app.use('/api/auth',require('./routes/auth'))
-app.use('/api/notes', require('./routes/form'))
+app.use('/api/survey', require('./routes/surveys'))
 
 app.listen(PORT, () => {
     console.log(`listening at http://localhost:${PORT}`)

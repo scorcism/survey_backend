@@ -7,6 +7,10 @@ const SurveyStatusSchema = Schema({
         default: "open"
         // open or close
     },
+    createOn:{
+        type:Date,
+        default: Date.now
+    }
 }, { timestamps: true });
 
 const SurveyStatus = mongoose.model('SurveyStatus',SurveyStatusSchema);

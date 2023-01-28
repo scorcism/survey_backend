@@ -2,16 +2,20 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const AnswerSchema = Schema({
-    QuestionID: {
+    questionID: {
         type:mongoose.Schema.Types.ObjectId,
         ref:'Question'
     },
-    Answer: {
+    answer: {
         type:String,
     },
-    RespondantID:{
+    respondantID:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Respondant'
+    },
+    createOn:{
+        type:Date,
+        default: Date.now
     }
 }, { timestamps: true });
 

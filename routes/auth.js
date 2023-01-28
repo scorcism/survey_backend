@@ -43,7 +43,7 @@ router.post('/createuser', [
 
         let data = {
             user: {
-                username: user.username
+                id: user.id
             }
         }
         var authtoken = jwt.sign(data, process.env.JWT_SECRET);
@@ -88,7 +88,7 @@ router.post("/login", [
 
         let data = {
             user: {
-                username: user.username
+                id: user.id
             }
         }
         let authtoken = jwt.sign(data, process.env.JWT_SECRET);
@@ -106,7 +106,7 @@ router.post('/getuser', fetchuser, async (req, res) => {
     try {
 
         let username = req.user;
-        const user = await User.find( username ).select("-password");
+        const user = await User.find(username).select("-password");
         // console.log(user)
         res.send(user);
     } catch (error) {
