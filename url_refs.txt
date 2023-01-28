@@ -1,9 +1,14 @@
 URLs_ref:{
+    "Node Js":"",
+    "Express Js":"",
+    "Nodemon":"",
+    "Mongo DB":"https://www.mongodb.com/",
+    "Mongoose":"",
     "express_validator":"https://express-validator.github.io/docs/",
     "bcryptjs":"https://www.npmjs.com/package/bcryptjs",
     "jwt token":"https://www.npmjs.com/package/jsonwebtoken",
     "dotenv":"https://www.npmjs.com/package/dotenv",
-    "db ref":"https://vertabelo.com/blog/database-design-survey-system/16.jpg"
+    "React JS":"https://reactjs.org/",
 }
 
 
