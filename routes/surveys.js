@@ -6,8 +6,16 @@ const Answer = require("../models/Answer")
 const Question = require("../models/Question")
 const SurveyStatus = require("../models/SurveyStatus");
 const Survey = require('../models/Survey');
+const logger = require('../middleware/logger')
+
+
+// used to create a log
+const log_ = (type, message) => {
+    logger.log(`${type}`, `${message}`)
+}
 
 router.get("/", (req, res) => {
+    log_("info","Check /api/survey/")
     res.send("api/survey WORKING")
 })
 
@@ -19,6 +27,7 @@ router.get("/getquestions", async (req, res) => {
     // insted we can do is we can fetch questions and give prompt that thsi qiestion is part of thsi survey
     try {
         const questions = await Question.find();
+        log_('info', `[Get All Questions]: ${req.originalUrl} - ${req.method} - ${req.ip}`);
         res.json(questions);
     } catch (error) {
         console.error(error.message);
@@ -55,6 +64,7 @@ router.post("/createsurvey", fetchuser, [
 
         let s = await Survey.findOne({ name });
         if (s) {
+            log_('info', `[create survey]: Already exists -  desc: ${req.body.desc} - maxResponses: ${req.body.maxResponses} - status: ${req.body.status} - respondantID: ${req.body.userID}  - ${req.originalUrl} - ${req.method} - ${req.ip}`)
             return res.status(400).json({ error: "Survey already exists" })
         }
 
@@ -63,6 +73,9 @@ router.post("/createsurvey", fetchuser, [
             name, desc, maxResponses, status, respondantID: userID
         })
         const saveNewSurvey = await newSurveyData.save();
+
+        log_('info', `[create survey]: name: ${req.body.name} - desc: ${req.body.desc} - maxResponses: ${req.body.maxResponses} - status: ${req.body.status} - respondantID: ${req.body.userID}  - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+
         res.json({ "currentSurveyID": saveNewSurvey.id });
         // this survey id will be store din the localstorage
     } catch (error) {
@@ -108,6 +121,7 @@ router.post("/createquestion", fetchuser, [
         // for later return the survey name if exists
         let qcheck = await Question.findOne({ question });
         if (qcheck) {
+            log_('info',`[Create Question]: Already Exists - surveyID: ${req.body.surveyID} - respondantID: ${req.body.respondantID} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
             return res.status(400).json({ error: "Question already exists" })
         }
         // survey id -> in front end it will be fecthed form the localstorage and will be send here
@@ -118,6 +132,10 @@ router.post("/createquestion", fetchuser, [
         })
 
         const saveQuestion = await newQuestionData.save()
+        
+        log_('info',`[Create Question]: question: ${req.body.question} - surveyID: ${req.body.surveyID} - respondantID: ${req.body.respondantID} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+
+
         res.json(saveQuestion)
     } catch (error) {
         console.error(error.message);
@@ -147,10 +165,10 @@ router.get("/question/:id", fetchuser, async (req, res) => {
         if (!question) {
             return res.status(401).json({ error: "Not allowed" });
         }
-        let answers = await Answer.find({questionID})
+        let answers = await Answer.find({ questionID })
 
-        let response = {question,answers}
-
+        let response = { question, answers }
+        log_('info',`[Get Question and all answers]: questionID: ${questionID} - Total Answers: ${Object.keys(answers).length} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
         res.json(response);
 
     } catch (error) {
@@ -161,8 +179,8 @@ router.get("/question/:id", fetchuser, async (req, res) => {
 })
 
 router.post("/answer/:id", [
-    body('answer',"Answer length should be >= 5").isLength({min:5})
-],fetchuser
+    body('answer', "Answer length should be >= 5").isLength({ min: 5 })
+], fetchuser
     , async (req, res) => {
 
         console.log(req.params.id)
@@ -197,6 +215,8 @@ router.post("/answer/:id", [
             })
             const saveAnswer = await a.save();
 
+            log_('info',`[Give answer]: questionID: ${req.body.questionID} - respondantID: ${req.body.respondantID} - answer: ${req.body.answer} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+
             res.json(saveAnswer)
 
         } catch (error) {
@@ -210,6 +230,11 @@ router.get("/mysurveys", fetchuser, async (req, res) => {
     // get all the questions related to the specific user
     try {
         const surveys = await Survey.find({ respondantID: req.user.id })
+
+        log_('info',`[My Surveys]: req.user.id: ${req.user.id} - Total Surveys: ${Object.keys(surveys).length} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+
+
+
         res.json({ surveys })
     } catch (error) {
         console.error(error.message);
@@ -221,6 +246,9 @@ router.get("/myquestions", fetchuser, async (req, res) => {
     // get all the questions related to the specific user
     try {
         const mquestions = await Survey.find({ respondantID: req.user.id })
+
+        log_('info',`[My Questions]: req.user.id: ${req.user.id} - Total questions: ${Object.keys(mquestions).length} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+
         res.json({ mquestions })
     } catch (error) {
         console.error(error.message);
@@ -240,6 +268,9 @@ router.delete("/deletesurvey/:id", fetchuser, async (req, res) => {
         return res.status(404).json({ error: "Not Found" })
     }
     survey = await Survey.findByIdAndDelete(req.params.id);
+
+    log_('info',`[Delete Survey]: respondantID: ${survey.respondantID} - Delete: ${req.params.id} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+
     res.json({ message: "Survey deleted" });
 
 })
@@ -255,7 +286,10 @@ router.delete("/deletequestion/:id", fetchuser, async (req, res) => {
     if (question.respondantID.toString() !== req.user.id) {
         return res.status(404).json({ error: "Not Found" })
     }
-    survey = await question.findByIdAndDelete(req.params.id);
+    question = await question.findByIdAndDelete(req.params.id);
+
+    log_('info',`[Delete Question]: respondantID: ${req.body.respondantID} - Delete: ${req.params.id} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+
     res.json({ message: "Question deleted" });
 })
 

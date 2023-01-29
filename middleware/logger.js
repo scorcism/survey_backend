@@ -13,16 +13,6 @@ const logger  = createLogger({
             )}
         ),
         new transports.File({
-            filename:'logs/error.log',
-            maxsize: 5242880, // 5MB
-            format: format.combine(
-                format.timestamp({format: 'MM-DD-YYY HH:mm:ss'}),
-                format.align(),
-                format.printf(error=> `${error.level}: ${error.timestamp}: ${error.message}`)
-            )}
-        ),
-        
-        new transports.File({
             filename:'logs/all.log',
             maxsize: 5242880, // 5MB
             format: format.combine(
