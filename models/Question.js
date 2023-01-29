@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 const QuestionSchema = Schema({
+    "question": {
+        type: String
+    },
     "surveyID": {
         type: mongoose.Schema.Types.ObjectId,
         ref : 'Survey',
@@ -10,10 +13,7 @@ const QuestionSchema = Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Respondant'
     },
-    "questionText": {
-        type: String
-    },
-    "createOn":{
+    "createdOn":{
         type:Date,
         default: Date.now
     }

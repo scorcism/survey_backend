@@ -3,29 +3,30 @@ const { Schema } = mongoose;
 
 const SurveySchema = Schema({
     "name": {
-        type: String
+        type: String,
+        unique:true
     },
     "desc": {
-        Type: String
+        type: String
     },
     "maxResponses": {
-        type: Number
+        type: Number,
+        default: 15,
         // if it hits the max response then close the form
-    },
-    "respondantID":{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Respondant',
     },
     "status":{
         type:Boolean,
         default: 1
         //  1-> open 0 -> close
     },
-    "createOn":{
-        type:Date,
-        default: Date.now
+    "respondantID":{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Respondant',
+    },
+    "createdBy":{
+        type:String
     }
 }, { timestamps: true });
 
-const Survey = mongoose.model('Survey', SurveySchema);
+const Survey = mongoose.model('survey', SurveySchema);
 module.exports = Survey; 
