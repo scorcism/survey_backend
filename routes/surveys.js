@@ -208,11 +208,6 @@ router.delete("/deletesurvey/:id", fetchuser, () => {
 router.delete("/deletequestion/:id", fetchuser, () => {
 
 })
-router.delete("/deleteanswer/:id", fetchuser, () => {
-
-})
-
-
 
 module.exports = router;
 
