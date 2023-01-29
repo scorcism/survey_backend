@@ -143,7 +143,7 @@ router.get('/getusername', fetchuser, async (req, res) => {
         // console.log(user)
         log_('info',`[get user name]: userID: ${req.user.id} - username: ${user.name} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
 
-        res.send(user.name);
+        res.send(user);
     } catch (error) {
         console.log(error)
         log_('error',`[create user]: status: 500 - message: Internal server error occured - ${req.originalUrl} - ${req.method} - ${req.ip}`)

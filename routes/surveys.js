@@ -11,6 +11,22 @@ router.get("/", (req, res) => {
     res.send("api/survey WORKING")
 })
 
+// no login required 
+// router.get("/getsurveys", async (req, res) => {
+router.get("/getquestions", async (req, res) => {
+    // get all the questions in the db
+    // every survey will have a questions in it
+    // insted we can do is we can fetch questions and give prompt that thsi qiestion is part of thsi survey
+    try {
+        const questions = await Question.find();
+        res.json(questions);
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).send("Internal server error occured");
+    }
+})
+
+
 router.post("/createsurvey", fetchuser, [
     body("name", "name should be >= 5").isLength({ min: 5 }),
     body("desc", "desc should be >= 5").isLength({ min: 10 }),
@@ -131,10 +147,11 @@ router.get("/question/:id", fetchuser, async (req, res) => {
         if (!question) {
             return res.status(401).json({ error: "Not allowed" });
         }
+        let answers = await Answer.find({questionID})
 
-        let answer = {};
+        let response = {question,answers}
 
-        res.send(question)
+        res.json(response);
 
     } catch (error) {
         console.error(error.message);
@@ -143,70 +160,103 @@ router.get("/question/:id", fetchuser, async (req, res) => {
 
 })
 
-router.post("/answer/:id", fetchuser
-, async (req, res) => {
+router.post("/answer/:id", [
+    body('answer',"Answer length should be >= 5").isLength({min:5})
+],fetchuser
+    , async (req, res) => {
 
-    console.log(req.params.id)
+        console.log(req.params.id)
 
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(400).json({error:errors.array()})
-    }
-
-    // every question will have assciated id with id 
-    // answer will be linked to the question id and respondant
-    // on click of that question he will be direted to the new page in frontend eg /addanswer where the question will be fetched from the parameter of id as mentioned in the question and 
-    // on that page there will be all the answers related to that question and a add answer filed 
-    /*
-    questionID
-    answer
-    respondantID
-    */
-    try {
-
-        let qID = req.params.id;
-        let question = await Question.findById(qID)
-        if (!question) {
-            return res.status(401).json({ error: "Not allowed" });
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ error: errors.array() })
         }
 
-        const {questionID, answer, respondantID} = req.body;
+        // every question will have assciated id with id 
+        // answer will be linked to the question id and respondant
+        // on click of that question he will be direted to the new page in frontend eg /addanswer where the question will be fetched from the parameter of id as mentioned in the question and 
+        // on that page there will be all the answers related to that question and a add answer filed 
+        /*
+        questionID
+        answer
+        respondantID
+        */
+        try {
 
-        const a = new Answer({
-            questionID,answer,respondantID
-        })
-        const saveAnswer = await a.save();
+            let qID = req.params.id;
+            let question = await Question.findById(qID)
+            if (!question) {
+                return res.status(400).json({ error: "Question doesn't exists" });
+            }
 
-        res.json(saveAnswer)
+            let questionID = req.params.id;
+            const { answer, respondantID } = req.body;
 
+            const a = new Answer({
+                questionID, answer, respondantID
+            })
+            const saveAnswer = await a.save();
+
+            res.json(saveAnswer)
+
+        } catch (error) {
+            console.error(error.message);
+            return res.status(500).send("Internal server error occured");
+        }
+    })
+
+
+router.get("/mysurveys", fetchuser, async (req, res) => {
+    // get all the questions related to the specific user
+    try {
+        const surveys = await Survey.find({ respondantID: req.user.id })
+        res.json({ surveys })
     } catch (error) {
         console.error(error.message);
         return res.status(500).send("Internal server error occured");
     }
 })
 
-router.put("/updatequestion/:id", (req, res) => {
-    // take the  qustion id from the question and makes the follwong changes
-})
-
-router.put("/updatesurvey/:id", (req, res) => {
-    // take the survey id and makes the following changes
-    // only the survey ower will be shows the edit button which will be on the dashboard
-})
-
-router.get("/questions", (req, res) => {
-    // get all the questions in the db
-})
-
-router.get("/myquestions", fetchuser, (req, res) => {
+router.get("/myquestions", fetchuser, async (req, res) => {
     // get all the questions related to the specific user
+    try {
+        const mquestions = await Survey.find({ respondantID: req.user.id })
+        res.json({ mquestions })
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).send("Internal server error occured");
+    }
 })
 
-router.delete("/deletesurvey/:id", fetchuser, () => {
+router.delete("/deletesurvey/:id", fetchuser, async (req, res) => {
+    let survey = await Survey.findById(req.params.id);
+
+    if (!survey) {
+        return res.status(404).json({ error: "Not Found" })
+    }
+
+    // check if the owner of the survey is the current user
+    if (survey.respondantID.toString() !== req.user.id) {
+        return res.status(404).json({ error: "Not Found" })
+    }
+    survey = await Survey.findByIdAndDelete(req.params.id);
+    res.json({ message: "Survey deleted" });
 
 })
-router.delete("/deletequestion/:id", fetchuser, () => {
+router.delete("/deletequestion/:id", fetchuser, async (req, res) => {
 
+    let question = await Question.findById(req.params.id);
+
+    if (!question) {
+        return res.status(404).json({ error: "Not Found" })
+    }
+
+    // check if the owner of the survey is the current user
+    if (question.respondantID.toString() !== req.user.id) {
+        return res.status(404).json({ error: "Not Found" })
+    }
+    survey = await question.findByIdAndDelete(req.params.id);
+    res.json({ message: "Question deleted" });
 })
 
 module.exports = router;
