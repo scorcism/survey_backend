@@ -17,15 +17,20 @@ router.post('/createuser', [
     body('email', 'Enter a valid Email').isEmail(),
     body('password', 'Password Length should >= 5').isLength({ min: 5 }),
 ], async (req, res) => {
-
+    console.log("Inside /createuser")
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
 
     try {
-        let user = await Respondant.findOne({ username: req.body.username })
+        let user = await Respondant.findOne({ email: req.body.email })
         if (user) {
+            return res.status(400).json({ error: "User with the same email already exists" })
+        }
+
+        let user_name = await Respondant.findOne({ username: req.body.username })
+        if (user_name) {
             return res.status(400).json({ error: "User with the same username already exists" })
         }
 
@@ -47,9 +52,10 @@ router.post('/createuser', [
         var authtoken = jwt.sign(data, process.env.JWT_SECRET);
 
         res.json({ authtoken })
+        // res.send("At the end ")
     } catch (error) {
-        return res.send(error)
-        // res.status(500).json({ error: "Internal server error occured" })
+        // return res.send(error)
+        res.status(500).json({ error: "Internal server error occured" })
     }
 })
 
@@ -102,11 +108,24 @@ router.post("/login", [
 router.post('/getuser', fetchuser, async (req, res) => {
     // res.send(req.user)
     try {
-
         userID = req.user.id;
         const user = await Respondant.findById(userID).select("-password");
         // console.log(user)
         res.send(user);
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: "Internal server error ocured" })
+    }
+})
+
+// Route 4: Get logged in user name : POST: /api/auth/getusername - Logged in required
+router.get('/getusername', fetchuser, async (req, res) => {
+    // res.send(req.user)
+    try {
+        userID = req.user.id;
+        const user = await Respondant.findById(userID).select("name");
+        // console.log(user)
+        res.send(user.name);
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: "Internal server error ocured" })
