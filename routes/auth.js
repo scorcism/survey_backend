@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
+const Respondant = require('../models/Respondant');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -13,7 +13,6 @@ const fetchuser = require('../middleware/fetchUser');
 */
 router.post('/createuser', [
     body('name', 'Enter a valid Name').isLength({ min: 2 }),
-    body('surname', "Enter Your surname").isLength({ min: 1 }),
     body('username', 'username length should >= 2').isLength({ min: 2 }),
     body('email', 'Enter a valid Email').isEmail(),
     body('password', 'Password Length should >= 5').isLength({ min: 5 }),
@@ -25,7 +24,7 @@ router.post('/createuser', [
     }
 
     try {
-        let user = await User.findOne({ username: req.body.username })
+        let user = await Respondant.findOne({ username: req.body.username })
         if (user) {
             return res.status(400).json({ error: "User with the same username already exists" })
         }
@@ -33,9 +32,8 @@ router.post('/createuser', [
         let salt = await bcrypt.genSalt(10);
         const securePassword = await bcrypt.hash(req.body.password, salt);
 
-        user = await User.create({
+        user = await Respondant.create({
             name: req.body.name,
-            surname: req.body.surname,
             username: req.body.username,
             email: req.body.email,
             password: securePassword,
@@ -59,7 +57,7 @@ router.post('/createuser', [
 /*
 */
 router.post("/login", [
-    body('username', 'username length should >= 2').isLength({ min: 2 }),
+    body('email', 'username length should >= 2').isLength({ min: 2 }),
     body('password', 'Password Length should >= 5').isLength({ min: 5 }),
 ], async (req, res) => {
     console.log("In login")
@@ -69,12 +67,12 @@ router.post("/login", [
         return res.status(400).json({ errors: errors.array() })
     }
 
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
     try {
         console.log("In try")
 
-        let user = await User.findOne({ username })
+        let user = await Respondant.findOne({ email })
 
         if (!user) {
             return res.status(400).json({ error: "Enter a valid credentials" })
@@ -105,8 +103,8 @@ router.post('/getuser', fetchuser, async (req, res) => {
     // res.send(req.user)
     try {
 
-        let username = req.user;
-        const user = await User.find(username).select("-password");
+        userID = req.user.id;
+        const user = await Respondant.findById(userID).select("-password");
         // console.log(user)
         res.send(user);
     } catch (error) {

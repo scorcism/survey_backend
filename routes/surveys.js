@@ -55,11 +55,11 @@ router.post("/answer",fetchuser,(req,res) =>{
    // increate the count on SystemStats 
 })
 
-route.put("/updatequestion/:id",(req,res)=>{
+router.put("/updatequestion/:id",(req,res)=>{
     // take the  qustion id from the question and makes the follwong changes
 })
 
-route.put("/updatesurvey/:id",(req,res)=>{
+router.put("/updatesurvey/:id",(req,res)=>{
     // take the survey id and makes the following changes
     // only the survey ower will be shows the edit button which will be on the dashboard
 })
