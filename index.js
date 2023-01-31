@@ -2,6 +2,7 @@ const express = require('express')
 const connectToMongo = require('./db/dbConnect')
 const dotenv = require('dotenv');
 const logger = require('./middleware/logger');
+const cors = require('cors')
 
 dotenv.config();
 connectToMongo();
@@ -10,6 +11,8 @@ const app = express();
 const PORT = 5000;
 
 app.use(express.json());
+app.use(express.cors())
+
 app.get("/", (req, res) => {
     logger.info("Working");
     logger.verbose("Working");
