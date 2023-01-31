@@ -11,13 +11,8 @@ const url_refs =
                 "bcryptjs": "https://www.npmjs.com/package/bcryptjs",
                 "jwt token": "https://www.npmjs.com/package/jsonwebtoken",
                 "dotenv": "https://www.npmjs.com/package/dotenv",
-            },
-        }, {
-            "Frontend": {
-                "React JS": {
-                    url: "https://reactjs.org/",
-                    purpose: ""
-                },
+                "cors": "https://www.npmjs.com/package/cors",
+                "winston": "https://www.npmjs.com/package/winston",
             },
         }
     ]
