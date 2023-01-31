@@ -259,38 +259,50 @@ router.get("/myquestions", fetchuser, async (req, res) => {
 router.delete("/deletesurvey/:id", fetchuser, async (req, res) => {
     let survey = await Survey.findById(req.params.id);
 
-    if (!survey) {
-        return res.status(404).json({ error: "Not Found" })
+    try{
+
+        if (!survey) {
+            return res.status(404).json({ error: "Not Found" })
+        }
+        
+        // check if the owner of the survey is the current user
+        if (survey.respondantID.toString() !== req.user.id) {
+            return res.status(404).json({ error: "Not Found" })
+        }
+        survey = await Survey.findByIdAndDelete(req.params.id);
+        
+        log_('info',`[Delete Survey]: respondantID: ${survey.respondantID} - Delete: ${req.params.id} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+        
+        res.json({ message: "Survey deleted" });
     }
-
-    // check if the owner of the survey is the current user
-    if (survey.respondantID.toString() !== req.user.id) {
-        return res.status(404).json({ error: "Not Found" })
+    catch (error){
+        console.error(error.message);
+        return res.status(500).send("Internal server error occured");
     }
-    survey = await Survey.findByIdAndDelete(req.params.id);
-
-    log_('info',`[Delete Survey]: respondantID: ${survey.respondantID} - Delete: ${req.params.id} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
-
-    res.json({ message: "Survey deleted" });
 
 })
 router.delete("/deletequestion/:id", fetchuser, async (req, res) => {
 
     let question = await Question.findById(req.params.id);
 
-    if (!question) {
-        return res.status(404).json({ error: "Not Found" })
+    try {
+        if (!question) {
+            return res.status(404).json({ error: "Not Found" })
+        }
+        
+        // check if the owner of the survey is the current user
+        if (question.respondantID.toString() !== req.user.id) {
+            return res.status(404).json({ error: "Not Found" })
+        }
+        question = await question.findByIdAndDelete(req.params.id);
+        
+        log_('info',`[Delete Question]: respondantID: ${req.body.respondantID} - Delete: ${req.params.id} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+        
+        res.json({ message: "Question deleted" });
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).send("Internal server error occured");
     }
-
-    // check if the owner of the survey is the current user
-    if (question.respondantID.toString() !== req.user.id) {
-        return res.status(404).json({ error: "Not Found" })
-    }
-    question = await question.findByIdAndDelete(req.params.id);
-
-    log_('info',`[Delete Question]: respondantID: ${req.body.respondantID} - Delete: ${req.params.id} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
-
-    res.json({ message: "Question deleted" });
 })
 
 module.exports = router;
