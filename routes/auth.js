@@ -22,7 +22,6 @@ router.post('/createuser', [
     body('email', 'Enter a valid Email').isEmail(),
     body('password', 'Password Length should >= 5').isLength({ min: 5 }),
 ], async (req, res) => {
-    // console.log("Inside /createuser")
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
@@ -75,7 +74,6 @@ router.post("/login", [
     body('email', 'username length should >= 2').isLength({ min: 2 }),
     body('password', 'Password Length should >= 5').isLength({ min: 5 }),
 ], async (req, res) => {
-    // console.log("In login")
 
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -85,7 +83,6 @@ router.post("/login", [
     const { email, password } = req.body;
 
     try {
-        // console.log("In try")
 
         let user = await Respondant.findOne({ email })
 
@@ -110,7 +107,6 @@ router.post("/login", [
 
         res.json({ authtoken })
     } catch (error) {
-        // console.log("In catch")
         log_('error',`[create user]: status: 500 - message: Internal server error occured - ${req.originalUrl} - ${req.method} - ${req.ip}`)
         res.send(500).json({ error: "Internal server error occured" })
     }
@@ -122,13 +118,12 @@ router.post('/getuser', fetchuser, async (req, res) => {
     try {
         userID = req.user.id;
         const user = await Respondant.findById(userID).select("-password");
-        // console.log(user)
+
 
         log_('info',`[get user]: userID: ${req.user.id} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
 
         res.send(user);
     } catch (error) {
-        // console.log(error)
         log_('error',`[create user]: status: 500 - message: Internal server error occured - ${req.originalUrl} - ${req.method} - ${req.ip}`)
         res.status(500).json({ error: "Internal server error ocured" })
     }
@@ -140,12 +135,11 @@ router.get('/getusername', fetchuser, async (req, res) => {
     try {
         userID = req.user.id;
         const user = await Respondant.findById(userID).select("name");
-        // console.log(user)
+
         log_('info',`[get user name]: userID: ${req.user.id} - username: ${user.name} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
 
         res.send(user);
     } catch (error) {
-        // console.log(error)
         log_('error',`[create user]: status: 500 - message: Internal server error occured - ${req.originalUrl} - ${req.method} - ${req.ip}`)
         res.status(500).json({ error: "Internal server error ocured" })
     }

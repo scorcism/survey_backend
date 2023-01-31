@@ -40,7 +40,6 @@ router.post("/createsurvey", fetchuser, [
     body("name", "name should be >= 5").isLength({ min: 5 }),
     body("desc", "desc should be >= 5").isLength({ min: 10 }),
 ], async (req, res) => {
-    // console.log("Inside Create Survey")
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: errors.array() })
@@ -88,7 +87,6 @@ router.post("/createquestion", fetchuser, [
     body("question", "question length >= 5").isLength({ min: 5 }),
     body("surveyID", "First create a survey buddy").exists(),
 ], async (req, res) => {
-    // console.log("Endpoint for create form");
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: errors.array() })
@@ -105,7 +103,6 @@ router.post("/createquestion", fetchuser, [
     // increate the count on SystemStats 
 
     try {
-        // console.log(req.body)
         const { question, surveyID } = req.body;
         // ###
         // user id from the header
@@ -144,7 +141,7 @@ router.post("/createquestion", fetchuser, [
 })
 
 router.get("/question/:id", fetchuser, async (req, res) => {
-    // console.log(req.params.id)
+
 
     // every question will have assciated id with id 
     // answer will be linked to the question id and respondant
@@ -182,8 +179,6 @@ router.post("/answer/:id", [
     body('answer', "Answer length should be >= 5").isLength({ min: 5 })
 ], fetchuser
     , async (req, res) => {
-
-        // console.log(req.params.id)
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

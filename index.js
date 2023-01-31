@@ -14,9 +14,8 @@ app.use(express.json());
 app.use(express.cors())
 
 app.get("/", (req, res) => {
-    // logger.info("Working");
-    // logger.verbose("Working");
-    // console.log("## Working");
+    logger.info("Working");
+    logger.verbose("Working");
     res.send("/ working");
 })
 
