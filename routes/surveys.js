@@ -9,7 +9,6 @@ const Survey = require('../models/Survey');
 const logger = require('../middleware/logger')
 
 
-// used to create a log
 const log_ = (type, message) => {
     logger.log(`${type}`, `${message}`)
 }
@@ -19,12 +18,9 @@ router.get("/", (req, res) => {
     res.send("api/survey WORKING")
 })
 
-// no login required 
-// router.get("/getsurveys", async (req, res) => {
+
+
 router.get("/getquestions", async (req, res) => {
-    // get all the questions in the db
-    // every survey will have a questions in it
-    // insted we can do is we can fetch questions and give prompt that thsi qiestion is part of thsi survey
     try {
         const questions = await Question.find();
         log_('info', `[Get All Questions]: ${req.originalUrl} - ${req.method} - ${req.ip}`);
@@ -44,20 +40,7 @@ router.post("/createsurvey", fetchuser, [
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: errors.array() })
     }
-    // create survey and return the survey id 
-    // which will be stored int the localstorage and at the time of create question if will be fetched form the local storage with valid conditions
-    // takes respondant id from aka middlewear the header
-    // increate the count on SystemStats 
 
-    /**
-     * Input
-     * name string
-     * desc string
-     * maxResponses number
-     * respondantID ID
-     * status boolean
-     * 
-    */
     const { name, desc, maxResponses, status } = req.body;
     try {
 
@@ -76,7 +59,7 @@ router.post("/createsurvey", fetchuser, [
         log_('info', `[create survey]: name: ${req.body.name} - desc: ${req.body.desc} - maxResponses: ${req.body.maxResponses} - status: ${req.body.status} - respondantID: ${req.body.userID}  - ${req.originalUrl} - ${req.method} - ${req.ip}`)
 
         res.json({ "currentSurveyID": saveNewSurvey.id });
-        // this survey id will be store din the localstorage
+
     } catch (error) {
         console.error(error.message);
         return res.status(500).send("Internal server error occured");
@@ -91,39 +74,22 @@ router.post("/createquestion", fetchuser, [
     if (!errors.isEmpty()) {
         return res.status(400).json({ error: errors.array() })
     }
-    /*
-    Survey Id - > from localhost
-    Question input ->
-    respondedid : form header
     
-    */
-
-    // take survey id from the localstorage
-    // takes respondant id from the header
-    // increate the count on SystemStats 
 
     try {
         const { question, surveyID } = req.body;
-        // ###
-        // user id from the header
+
         let respondantID = req.user.id;
 
-        // Double check for the surveyID and RespondantID
-        // can be not done, not manditory
         if (surveyID.length < 10 | respondantID.length < 10) {
             return res.status(400).json({ error: "Create with valid credentials" })
         }
 
-        // check if question already exist or not
-        // for later return the survey name if exists
         let qcheck = await Question.findOne({ question });
         if (qcheck) {
             log_('info',`[Create Question]: Already Exists - surveyID: ${req.body.surveyID} - respondantID: ${req.body.respondantID} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
             return res.status(400).json({ error: "Question already exists" })
         }
-        // survey id -> in front end it will be fecthed form the localstorage and will be send here
-        // after that it will be deleted from the localstorage
-
         const newQuestionData = await Question.create({
             question, respondantID, surveyID
         })
@@ -143,14 +109,6 @@ router.post("/createquestion", fetchuser, [
 router.get("/question/:id", fetchuser, async (req, res) => {
 
 
-    // every question will have assciated id with id 
-    // answer will be linked to the question id and respondant
-    // on click of that question he will be direted to the new page in frontend eg /addanswer where the question will be fetched from the parameter of id as mentioned in the question and 
-    // on that page there will be all the answers related to that question and a add answer filed 
-    // 
-
-    // Get only the specific question and related answers of the question and return the falue
-    // not in use though
     if (!req.params.id) {
         return res.status(400).json({ error: "Select valid questions" })
     }
@@ -185,15 +143,7 @@ router.post("/answer/:id", [
             return res.status(400).json({ error: errors.array() })
         }
 
-        // every question will have assciated id with id 
-        // answer will be linked to the question id and respondant
-        // on click of that question he will be direted to the new page in frontend eg /addanswer where the question will be fetched from the parameter of id as mentioned in the question and 
-        // on that page there will be all the answers related to that question and a add answer filed 
-        /*
-        questionID
-        answer
-        respondantID
-        */
+    
         try {
 
             let qID = req.params.id;
@@ -222,7 +172,6 @@ router.post("/answer/:id", [
 
 
 router.get("/mysurveys", fetchuser, async (req, res) => {
-    // get all the questions related to the specific user
     try {
         const surveys = await Survey.find({ respondantID: req.user.id })
 
@@ -238,7 +187,7 @@ router.get("/mysurveys", fetchuser, async (req, res) => {
 })
 
 router.get("/myquestions", fetchuser, async (req, res) => {
-    // get all the questions related to the specific user
+
     try {
         const mquestions = await Survey.find({ respondantID: req.user.id })
 
@@ -260,7 +209,6 @@ router.delete("/deletesurvey/:id", fetchuser, async (req, res) => {
             return res.status(404).json({ error: "Not Found" })
         }
         
-        // check if the owner of the survey is the current user
         if (survey.respondantID.toString() !== req.user.id) {
             return res.status(404).json({ error: "Not Found" })
         }
@@ -285,7 +233,6 @@ router.delete("/deletequestion/:id", fetchuser, async (req, res) => {
             return res.status(404).json({ error: "Not Found" })
         }
         
-        // check if the owner of the survey is the current user
         if (question.respondantID.toString() !== req.user.id) {
             return res.status(404).json({ error: "Not Found" })
         }

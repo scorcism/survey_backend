@@ -13,9 +13,7 @@ const log_ = (type, message) => {
     logger.log(`${type}`,`${message}`)
 }
 
-// Route 1: create user: No Login Required: POST /api/auth/createuser
-/*
-*/
+
 router.post('/createuser', [
     body('name', 'Enter a valid Name').isLength({ min: 2 }),
     body('username', 'username length should >= 2').isLength({ min: 2 }),
@@ -59,17 +57,13 @@ router.post('/createuser', [
         log_('info',`[create user]: name: ${req.body.name} - username: ${req.body.username} - email: ${req.body.email} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
 
         res.json({ authtoken })
-        // res.send("At the end ")
     } catch (error) {
-        // return res.send(error)
         log_('error',`[create user]: status: 500 - message: Internal server error occured - ${req.originalUrl} - ${req.method} - ${req.ip}`)
         res.status(500).json({ error: "Internal server error occured" })
     }
 })
 
-// Route 2: create user: No Login Required: POST /api/auth/login
-/*
-*/
+
 router.post("/login", [
     body('email', 'username length should >= 2').isLength({ min: 2 }),
     body('password', 'Password Length should >= 5').isLength({ min: 5 }),
@@ -112,9 +106,8 @@ router.post("/login", [
     }
 })
 
-// Route 3: Get logged in user details : POST: /api/auth/getuser - Logged in required
+
 router.post('/getuser', fetchuser, async (req, res) => {
-    // res.send(req.user)
     try {
         userID = req.user.id;
         const user = await Respondant.findById(userID).select("-password");
@@ -129,9 +122,9 @@ router.post('/getuser', fetchuser, async (req, res) => {
     }
 })
 
-// Route 4: Get logged in user name : POST: /api/auth/getusername - Logged in required
+
 router.get('/getusername', fetchuser, async (req, res) => {
-    // res.send(req.user)
+
     try {
         userID = req.user.id;
         const user = await Respondant.findById(userID).select("name");

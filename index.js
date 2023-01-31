@@ -22,14 +22,12 @@ app.get("/", (req, res) => {
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/survey', require('./routes/surveys'))
 
-
-// Capture 500 errors
 app.use((err, req, res, next) => {
     res.status(500).json({error:"Internal server error"});
     logger.error(`${err.status || 500} - ${res.statusMessage} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
 })
 
-// Capture 404 erors
+
 app.use((req, res, next) => {
     res.status(404).json({error:"Page Not Found"});
     logger.error(`400 || ${res.statusMessage} - ${req.originalUrl} - ${req.method} - ${req.ip}`);

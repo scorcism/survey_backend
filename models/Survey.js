@@ -12,12 +12,10 @@ const SurveySchema = Schema({
     "maxResponses": {
         type: Number,
         default: 15,
-        // if it hits the max response then close the form
     },
     "status":{
         type:Boolean,
         default: 1
-        //  1-> open 0 -> close
     },
     "respondantID":{
         type: mongoose.Schema.Types.ObjectId,

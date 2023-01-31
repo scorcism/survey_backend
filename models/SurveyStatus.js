@@ -5,7 +5,6 @@ const SurveyStatusSchema = Schema({
     SurveyStatus: {
         type:String,
         default: "open"
-        // open or close
     },
     createOn:{
         type:Date,
